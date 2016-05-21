@@ -17,9 +17,9 @@ public class Population {
 	private Vector<Unit> units; //egyedek
 	private int populationFitness;
 	private int avarageFitness;
-	private int peakFitness;
 	private Environment e;
 	private String allTimePeakGenome;
+	private int allTimePeakFitness;
 
 	public int getPopulationFitness() {
 		return populationFitness;
@@ -118,6 +118,14 @@ public class Population {
 		updatePopulationFitness();
 		updateAvarageFitness();
 		updateAllTimePeakGenome();
+		updateAllTimePeakFitness();
+	}
+
+	private void updateAllTimePeakFitness() {
+
+		if(allTimePeakFitness<getPeakFitness()) allTimePeakFitness = getPeakFitness();
+
+
 	}
 
 	private void updateAllTimePeakGenome() {
@@ -162,10 +170,15 @@ public class Population {
 
 	}
 
-	public void updatePeakFitness() {peakFitness = getPeakFitness();}
+	public void updatePeakFitness() {getPeakFitness();}
 
 	public String getAllTimePeakGenome() {
 		return allTimePeakGenome;
+	}
+
+	public int getAllTimePeakFitness() {
+
+		return allTimePeakFitness;
 	}
 
 }
