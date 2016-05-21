@@ -1,0 +1,8 @@
+[
+	{"alpha": "", 			  "omega": "Hello World!",    "genomeSize": "11" },
+	{"alpha": "hello world?", "omega": "Hello World!",    "genomeSize": "11" },
+	{"alpha": "", 			  "01010101": "Hello World!", "genomeSize": "8" },
+	{"alpha": "00001111",     "01010101": "Hello World!", "genomeSize": "8" }
+]
+
+

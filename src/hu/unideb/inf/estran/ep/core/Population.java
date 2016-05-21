@@ -19,6 +19,7 @@ public class Population {
 	private int avarageFitness;
 	private int peakFitness;
 	private Environment e;
+	private String allTimePeakGenome;
 
 	public int getPopulationFitness() {
 		return populationFitness;
@@ -28,7 +29,7 @@ public class Population {
 		return avarageFitness;
 	}
 
-	public void evolve(int method, int weight) {
+	public void evolve(int method, int weight, boolean differentParents) {
 
 		Vector<Unit> nextGeneration = new Vector<>(); //StarTrek FTW
 		Unit u1, u2;
@@ -37,6 +38,7 @@ public class Population {
 
 			u1 = Selection(method);
 			u2 = Selection(method);
+			while(differentParents && u1.equals(u2) ) { u2 = Selection(method);}
 
 			nextGeneration.add(e.CrossOver(
 					u1,
@@ -67,21 +69,22 @@ public class Population {
 	}
 
 
-	public Unit RouletteWheelSelection () { // weighted by fitness ; 1 IF popF is 0, then random
-DÁFÁK?
-		elvileg nagy számoknál ez lesz a jobb - mutáció után újra check
-		Random rand = new Random();
-		int r = populationFitness == 0?0:rand.nextInt(populationFitness);
-		Unit unit = units.elementAt(0);
-		int counter = 0;
+	public Unit RouletteWheelSelection () { // weighted by fitness ; IF popF is 0 -> randomS
 
-		for(Unit u : units) {
+		if (populationFitness == 0) return RandomSelection();
 
-			counter += u.getFitness();
-			if(r<=counter) unit = u;
+		else {
+
+			int rand = new Random().nextInt(populationFitness);
+			int i = 0;
+			int counter = units.elementAt(i).getFitness();
+
+			while (counter < rand) counter += units.elementAt(++i).getFitness();
+
+			return units.elementAt(i);
 		}
 
-		return r == 0? units.elementAt(rand.nextInt(e.getPopulationSize())) : unit;
+
 	}
 
 	public Unit RandomSelection () { //random ; else
@@ -90,11 +93,20 @@ DÁFÁK?
 	}
 
 
+	public void mutate(int mutationRate) {
 
+		Random rand = new Random();
+		mutationRate = mutationRate < 0 ? 0 : mutationRate > 10 ? 10 : mutationRate;
+
+		for (int i = 0; i<e.getPopulationSize();i++) if (rand.nextInt(10) < mutationRate) units.set(i, e.mutate(units.elementAt(i), mutationRate));
+
+
+		update();
+
+	}
 
 
 	public void genesis() { //creates initial population
-		//units.clear(); //YOLO
 		for (int i=0;i<e.getPopulationSize();i++) units.add(e.generateUnit());
 
 		update();
@@ -105,16 +117,20 @@ DÁFÁK?
 		updatePeakFitness();
 		updatePopulationFitness();
 		updateAvarageFitness();
+		updateAllTimePeakGenome();
+	}
+
+	private void updateAllTimePeakGenome() {
+		if(allTimePeakGenome == null) allTimePeakGenome = getPeakGenome();
+		if(e.calculateFitness(allTimePeakGenome)<e.calculateFitness(getPeakGenome())) allTimePeakGenome=getPeakGenome();
+
 	}
 
 	public void genesisFromSeed() { //creates initial population from seed - alpha
-		//units.clear(); //YOLO
+
 		for (int i=0;i<e.getPopulationSize();i++) units.add(e.generateUnitSeeded());
 
-		updatePeakFitness();
-		updatePopulationFitness();
-		updateAvarageFitness();
-
+		update();
 	}
 
 	private Unit getFittestUnit() {
@@ -148,4 +164,10 @@ DÁFÁK?
 
 	public void updatePeakFitness() {peakFitness = getPeakFitness();}
 
+	public String getAllTimePeakGenome() {
+		return allTimePeakGenome;
+	}
+
 }
+
+//egyenlõ szülõk - ha elsz idõ
