@@ -17,56 +17,52 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.SplitPane;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 
 public class Controller implements Initializable{
 
     @FXML
-    private Button runButton;
-
-    @FXML
-    private Button initButton;
-
-    @FXML
-    private TextField alphaField;
-
-    @FXML
-    private TextField omegaField;
-
-    @FXML
-    private LineChart<Number, Number> lChart;
-
-    @FXML
-    private TextField console;
+    private Button button;
 
     @FXML
     private Pane pane;
 
     @FXML
-    private Pane paneConsole;
+    private SplitPane spane;
+
+    @FXML
+    private LineChart<Number, Number> lChart;
 
 	private Vector<Integer> averageFitness;
-	private String allTimeFittestGenome;
+	private Object fittestGenome;
 	private Vector<Integer> peakFitness;
 	private Vector<Project> projects;
-	private int allTimePeakFitness;
 
 
+	private void init(ActionEvent event) {
+		/*
+    	NumberAxis xAxis = new NumberAxis();
+        NumberAxis yAxis = new NumberAxis();
+        xAxis.setLabel("Fitness");
+        yAxis.setLabel("Cycles");
+*/
+
+		/*ProjectService projectService = new ProjectService();
+    	  projects = projectService.loadProjects();
+		 */
+
+	}
 
 
-/*
 	@FXML
 	private void onClickLoad(ActionEvent event) {
     	ProjectService projectService = new ProjectService();
     	projects = projectService.loadProjects();
 	}
-*/
 
     @SuppressWarnings("unchecked")
 	@FXML
-	private void onClickRunButton(ActionEvent event) {
+	private void onClickButton(ActionEvent event) {
 
         lChart.setTitle("Evolution");
         XYChart.Series<Number, Number> average = new XYChart.Series<>(); average.setName("Average");
@@ -76,10 +72,8 @@ public class Controller implements Initializable{
     	ee.evolution();
 
     	averageFitness = ee.getAverageFitness();
-    	allTimeFittestGenome = ee.getAllTimeFittestGenome();
-    	allTimePeakFitness = ee.getAllTimePeakFitness();
+    	fittestGenome = ee.getFittestGenome();
     	peakFitness = ee.getPeakFitness();
-
 
     	//for(int i : averageFitness) System.out.println(i);
 
@@ -94,7 +88,6 @@ public class Controller implements Initializable{
         for(int i : averageFitness) average.getData().add(new XYChart.Data<Number, Number>(++index, i));
         index = 0;
         for(int i : peakFitness) peak.getData().add(new XYChart.Data<Number, Number>(++index, i));
-
 
 
        // lChart.getData().removeAll();
@@ -118,7 +111,8 @@ public class Controller implements Initializable{
 //        average.nodeProperty().get().setStyle("-fx-stroke-width: 3;");
         lChart.getData().add(average);
         lChart.getData().add(peak);
-        console.setText("Best candidate:     " + allTimeFittestGenome + " (with " + allTimePeakFitness + "% match)");
+       //lChart.getData().add(Arrays.asList(new XYChart.Data<Integer, Integer>(1, 23)));
+
 
 
 	}
@@ -135,8 +129,8 @@ public class Controller implements Initializable{
 		String numbers = "0123456789";
 		String symbols = "+-*/%=<>()[]{}.,;!? _-&|$*'";
 
-		String alpha = alphaField.getText();
-		String omega = omegaField.getText();
+		String alpha = "";
+		String omega = "Hello World!"; //hosszúnál elszállt
 
 		int method = 1;  //method  0: truncation, 1: wheel(best), else: random
 		int weight = 1;  //weight -1: random, 0: defined by fitness(best), else: given rate
@@ -156,26 +150,7 @@ public class Controller implements Initializable{
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
-	 omegaField.setText("Hello World!");
-	 alphaField.setText("");
-	 console.setText("Please set options, then click \"Run\".");
-
-
-
-	}
-
-	@FXML
-	private void onClickInitButton(ActionEvent event) {
-		/*
-    	NumberAxis xAxis = new NumberAxis();
-        NumberAxis yAxis = new NumberAxis();
-        xAxis.setLabel("Fitness");
-        yAxis.setLabel("Cycles");
-*/
-
-		/*ProjectService projectService = new ProjectService();
-    	  projects = projectService.loadProjects();
-		 */
+	//	pane.set
 
 	}
 

@@ -24,8 +24,7 @@ public class EvolutionEngine {
 
 	private Vector<Integer> averageFitness;// = new Dimension()
 	private Vector<Integer> peakFitness;// = new Dimension()
-	private String allTimeFittestGenome;
-	private int allTimePeakFitness;
+	private String fittestGenome;
 
 	private int method;
 	private int weight;
@@ -45,15 +44,13 @@ public class EvolutionEngine {
 			//MUTATE / CROSSOVER
 		}
 
-		allTimeFittestGenome = p.getAllTimePeakGenome();
-		allTimePeakFitness = p.getAllTimePeakFitness();
+		fittestGenome = p.getAllTimePeakGenome();
 
 	}
 
 	public Vector<Integer> getAverageFitness() {return averageFitness;}
 	public Vector<Integer> getPeakFitness() {return peakFitness;}
-	public String getAllTimeFittestGenome() {return allTimeFittestGenome;}
-	public int getAllTimePeakFitness() {return allTimePeakFitness;}
+	public String getFittestGenome() {return fittestGenome;}
 
 
 }
