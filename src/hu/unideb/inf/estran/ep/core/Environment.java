@@ -141,9 +141,8 @@ public class Environment {
             }
 
             else {
-                weight = Math.abs(weight);
                 Unit u3 = u1.getFitness()>u2.getFitness()?u1:u2;
-                for(int i = 0;i<genomeSize;i++) s += rand.nextInt(weight) == 0 ? u3.getGenome().charAt(i): rand.nextInt(1)==0?u1.getGenome().charAt(i):u2.getGenome().charAt(i);
+                for(int i = 0;i<genomeSize;i++) s += rand.nextInt(4) != 0 ? u3.getGenome().charAt(i): rand.nextInt(1)==0?u1.getGenome().charAt(i):u2.getGenome().charAt(i);
             }
 
             Unit u = new Unit(s, calculateFitness(s));

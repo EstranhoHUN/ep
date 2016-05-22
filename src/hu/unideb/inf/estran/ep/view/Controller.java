@@ -8,6 +8,8 @@ import java.util.Vector;
 
 import hu.unideb.inf.estran.ep.core.EvolutionEngine;
 import hu.unideb.inf.estran.ep.dao.ProjectService;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -16,6 +18,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -47,6 +50,18 @@ public class Controller implements Initializable{
     @FXML
     private Pane paneConsole;
 
+    @FXML
+    private ChoiceBox<String> methodChoiceBox;
+
+    @FXML
+    private ChoiceBox<String> crossOverChoiceBox;
+
+    @FXML
+    private NumberAxis xAxis;
+
+    @FXML
+    private NumberAxis yAxis;
+
 	private Vector<Integer> averageFitness;
 	private String allTimeFittestGenome;
 	private Vector<Integer> peakFitness;
@@ -68,8 +83,9 @@ public class Controller implements Initializable{
 	@FXML
 	private void onClickRunButton(ActionEvent event) {
 
-        lChart.setTitle("Evolution");
+        //lChart.setTitle("Evolution");
         XYChart.Series<Number, Number> average = new XYChart.Series<>(); average.setName("Average");
+
         XYChart.Series<Number, Number> peak = new XYChart.Series<>(); peak.setName("Peak");
 
         EvolutionEngine ee = initializeEvolutionEngine();
@@ -125,11 +141,6 @@ public class Controller implements Initializable{
 
 	private EvolutionEngine initializeEvolutionEngine() {
 
-
-		// felszopás DAOból
-		// értékek átadása
-		//interaktív felület
-
 		String alphabet = "abcdefghijklmnopqrstuvwxyz";
 		String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		String numbers = "0123456789";
@@ -138,14 +149,21 @@ public class Controller implements Initializable{
 		String alpha = alphaField.getText();
 		String omega = omegaField.getText();
 
-		int method = 1;  //method  0: truncation, 1: wheel(best), else: random
-		int weight = 1;  //weight -1: random, 0: defined by fitness(best), else: given rate
+		int method = methodChoiceBox.getValue()=="Roulette Wheel"?1:methodChoiceBox.getValue()=="Truncation"?0:-1;
+		int weight = crossOverChoiceBox.getValue()=="Weighted by fitness"?0:crossOverChoiceBox.getValue()=="Random"?-1:3;
 		int mutationRate = 2; //mutationRate 0-10 = 0%-100%
 		boolean differentParents = true;
 
 
 		int populationSize = 250;
 		int maxCycle = 250;
+
+		xAxis.setUpperBound(maxCycle*1.05);
+
+
+
+
+
 
 		EvolutionEngine ee = new EvolutionEngine(populationSize, omega.length(), alphabet+ALPHABET+symbols, alpha, omega, maxCycle, method, weight, mutationRate, differentParents);
 		EvolutionEngine ee_ = new EvolutionEngine(populationSize, omega.length(), alphabet+ALPHABET+symbols, alpha, omega, maxCycle, method, weight, mutationRate, differentParents);
@@ -160,7 +178,11 @@ public class Controller implements Initializable{
 	 alphaField.setText("");
 	 console.setText("Please set options, then click \"Run\".");
 
+	 methodChoiceBox.setItems(FXCollections.observableArrayList("Roulette Wheel", "Truncation", "Random"));
+	 methodChoiceBox.getSelectionModel().selectFirst();
 
+	 crossOverChoiceBox.setItems(FXCollections.observableArrayList("Weighted by fitness", "Random", "Exact 75%"));
+	 crossOverChoiceBox.getSelectionModel().selectFirst();
 
 	}
 
