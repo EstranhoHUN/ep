@@ -5,6 +5,7 @@ import java.util.Random;
 
 import javax.annotation.Generated;
 
+import hu.unideb.inf.estran.ep.view.Controller;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -18,15 +19,8 @@ public class Main extends Application{
 
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-		
-
-		
 
 		launch(args);
-
-
 	}
 
 	 @Override
@@ -39,8 +33,11 @@ public class Main extends Application{
 	        stage.setTitle("Evolution Programming - Demo @ Bereczki László 2016");
 	        stage.setScene(scene);
 	        stage.show();
+
+
 	    }
 
-
+	 @Override
+     public void stop(){Controller.onExit();}
 
 }

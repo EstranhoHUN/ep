@@ -2,6 +2,7 @@ package hu.unideb.inf.estran.ep.view;
 
 import java.beans.EventHandler;
 import java.net.URL;
+import java.sql.Savepoint;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -9,6 +10,7 @@ import java.util.Vector;
 
 import hu.unideb.inf.estran.ep.core.EvolutionEngine;
 import hu.unideb.inf.estran.ep.dao.ProjectService;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -88,8 +90,9 @@ public class Controller implements Initializable{
 	private Vector<Integer> averageFitness;
 	private String allTimeFittestGenome;
 	private Vector<Integer> peakFitness;
-	private Vector<Project> projects;
+	private static Vector<Project> projects;
 	private int allTimePeakFitness;
+	private int actualListMember;
 
 	@FXML
 	private void onClickRunButton(ActionEvent event) {
@@ -109,7 +112,6 @@ public class Controller implements Initializable{
         updateConsole();
 
 	}
-
 
     @SuppressWarnings("unchecked")
 	private void updateGraph(){
@@ -196,17 +198,58 @@ public class Controller implements Initializable{
 		cyclesFieldCheck = cyclesFieldCheck < 10 ? 10 : cyclesFieldCheck > 1000 ? 1000 : cyclesFieldCheck;
 		cyclesField.setText(Integer.toString(cyclesFieldCheck));
 
+		if(!(ucAlphabetRadioButton.isSelected()||lcAlphabetRadioButton.isSelected()||numbersRadioButton.isSelected()||symbolsRadioButton.isSelected()))
+			ucAlphabetRadioButton.setSelected(true);
+
 
 	}
+
+	public void loadProjectsFromDao() {
+		ProjectService projectService = new ProjectService();
+		projects = projectService.loadProjects();
+
+	}
+
+	//public void loadProjectsFromVector() {
+
+//	}//todo
+
+	private void saveProjectsToVector() { //todo
+
+			validateFields();
+			if(actualListMember != -1) {
+
+			projects.set(actualListMember,new Project(
+					projectNameTextField.getText(),
+					Boolean.valueOf(lcAlphabetRadioButton.isSelected()),
+					Boolean.valueOf(ucAlphabetRadioButton.isSelected()),
+					Boolean.valueOf(numbersRadioButton.isSelected()),
+					Boolean.valueOf(symbolsRadioButton.isSelected()),
+					alphaField.getText(),
+					omegaField.getText(),
+					methodChoiceBox.getSelectionModel().getSelectedIndex(),
+					crossOverChoiceBox.getSelectionModel().getSelectedIndex(),
+					mutationRateChoiceBox.getSelectionModel().getSelectedIndex(),
+					Boolean.valueOf(differentParentsRadioButton.isSelected()),
+					Integer.valueOf(populationSizeField.getText()),
+					Integer.valueOf(cyclesField.getText())
+					)
+				);
+
+			loadGUI();
+			}
+			}
+
+
 
 	@FXML
 	public void onClickProjectListView(MouseEvent event) {
 
-        loadProjects();
+		saveProjectsToVector();
 
-		int projectIndex = projectsListView.getSelectionModel().getSelectedIndex();
+		actualListMember = projectsListView.getSelectionModel().getSelectedIndex();
 
-		if(projectIndex>=0) loadGUI(projectIndex);
+		loadGUI();
     }
 
 
@@ -228,41 +271,51 @@ public class Controller implements Initializable{
 		 crossOverChoiceBox.getSelectionModel().selectFirst();
 		 mutationRateChoiceBox.getSelectionModel().selectFirst();
 
-	}
+		 updateProjectList();
 
-	private void loadGUI(int projectIndex) {
-
-		 projectNameTextField.setText(projects.elementAt(projectIndex).getProjectName());
-		 omegaField.setText(projects.elementAt(projectIndex).getOmega());
-		 alphaField.setText(projects.elementAt(projectIndex).getAlpha());
-		 methodChoiceBox.getSelectionModel().select(projects.elementAt(projectIndex).getMethod());
-		 crossOverChoiceBox.getSelectionModel().select(projects.elementAt(projectIndex).getWeight());
-		 mutationRateChoiceBox.getSelectionModel().select(projects.elementAt(projectIndex).getMutationRate());
-		 populationSizeField.setText(String.valueOf(projects.elementAt(projectIndex).getPopulationSize()));
-		 cyclesField.setText(String.valueOf(projects.elementAt(projectIndex).getMaxCycle()));
-		 differentParentsRadioButton.setSelected(projects.elementAt(projectIndex).isDifferentParents());
-		 ucAlphabetRadioButton.setSelected(projects.elementAt(projectIndex).isALPHABET());
-		 lcAlphabetRadioButton.setSelected(projects.elementAt(projectIndex).isAlphabet());
-		 numbersRadioButton.setSelected(projects.elementAt(projectIndex).isNumbers());
-		 symbolsRadioButton.setSelected(projects.elementAt(projectIndex).isSymbols());
 
 	}
 
-	private void loadProjects() {
+	private void loadGUI() {
 
+		 projectNameTextField.setText(projects.elementAt(actualListMember).getProjectName());
+		 omegaField.setText(projects.elementAt(actualListMember).getOmega());
+		 alphaField.setText(projects.elementAt(actualListMember).getAlpha());
+		 methodChoiceBox.getSelectionModel().select(projects.elementAt(actualListMember).getMethod());
+		 crossOverChoiceBox.getSelectionModel().select(projects.elementAt(actualListMember).getWeight());
+		 mutationRateChoiceBox.getSelectionModel().select(projects.elementAt(actualListMember).getMutationRate());
+		 populationSizeField.setText(String.valueOf(projects.elementAt(actualListMember).getPopulationSize()));
+		 cyclesField.setText(String.valueOf(projects.elementAt(actualListMember).getMaxCycle()));
+		 differentParentsRadioButton.setSelected(projects.elementAt(actualListMember).isDifferentParents());
+		 ucAlphabetRadioButton.setSelected(projects.elementAt(actualListMember).isALPHABET());
+		 lcAlphabetRadioButton.setSelected(projects.elementAt(actualListMember).isAlphabet());
+		 numbersRadioButton.setSelected(projects.elementAt(actualListMember).isNumbers());
+		 symbolsRadioButton.setSelected(projects.elementAt(actualListMember).isSymbols());
+
+		 updateProjectList();
+
+
+	}
+
+	public static void onExit() {
 		ProjectService projectService = new ProjectService();
-		projects = projectService.loadProjects();
+		projectService.saveProjects(projects);
+	}
 
-		ObservableList<String> projectNames =FXCollections.observableArrayList ();
-		for(Project p : projects) projectNames.add(p.getProjectName());
-		projectsListView.setItems(projectNames);
+	private void updateProjectList() {
+
+		ObservableList<String> projectNames = FXCollections.observableArrayList ();
+		for(int i = 0;i<projects.size();i++)projectNames.add(i+1+"# " + projects.get(i).getProjectName());
+	    projectsListView.setItems(projectNames);
 
 	}
+
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
-		loadProjects();
+		loadProjectsFromDao();
+
 
 
 	 console.setStyle("-fx-control-inner-background: black; -fx-text-fill: lime;");
@@ -275,98 +328,30 @@ public class Controller implements Initializable{
 
 	 clearGUI();
 
+	 actualListMember = -1;
+
+
 	}
 
 
-	private void save(int projectIndex) {
 
-		if(projectIndex>=0) {
-
-			projects.set(projectIndex,new Project(
-					projectNameTextField.getText(),
-					Boolean.valueOf(lcAlphabetRadioButton.isSelected()),
-					Boolean.valueOf(ucAlphabetRadioButton.isSelected()),
-					Boolean.valueOf(numbersRadioButton.isSelected()),
-					Boolean.valueOf(symbolsRadioButton.isSelected()),
-					alphaField.getText(),
-					omegaField.getText(),
-					methodChoiceBox.getSelectionModel().getSelectedIndex(),
-					crossOverChoiceBox.getSelectionModel().getSelectedIndex(),
-					mutationRateChoiceBox.getSelectionModel().getSelectedIndex(),
-					Boolean.valueOf(differentParentsRadioButton.isSelected()),
-					Integer.valueOf(populationSizeField.getText()),
-					Integer.valueOf(cyclesField.getText())
-					)
-				);
-
-			ProjectService projectService = new ProjectService();
-			projectService.saveProjects(projects);
-
-			loadProjects();
-
-			}
-
-	}
-
-	@FXML
-	private void onClickSaveButton(ActionEvent event) {
-
-
-
-		validateFields();
-		int projectIndex = projectsListView.getSelectionModel().getSelectedIndex();
-		save(projectIndex);
-
-	}
+	//ELITISM
 
 	@FXML
 	private void onClickNewButton(ActionEvent event) {
-		clearGUI();
 
+		projects.add(new Project("New Project",true,true,false,true,"","Hello World!",0,0,1,true,100,100));
 
-
-		projects.add(new Project(
-				projectNameTextField.getText(),
-				Boolean.valueOf(lcAlphabetRadioButton.isSelected()),
-				Boolean.valueOf(ucAlphabetRadioButton.isSelected()),
-				Boolean.valueOf(numbersRadioButton.isSelected()),
-				Boolean.valueOf(symbolsRadioButton.isSelected()),
-				alphaField.getText(),
-				omegaField.getText(),
-				methodChoiceBox.getSelectionModel().getSelectedIndex(),
-				crossOverChoiceBox.getSelectionModel().getSelectedIndex(),
-				mutationRateChoiceBox.getSelectionModel().getSelectedIndex(),
-				Boolean.valueOf(differentParentsRadioButton.isSelected()),
-				Integer.valueOf(populationSizeField.getText()),
-				Integer.valueOf(cyclesField.getText())
-				)
-			);
-
-		ProjectService projectService = new ProjectService();
-		projectService.saveProjects(projects);
-
-		loadProjects();
-
-
+		updateProjectList();
 	}
 
 	@FXML
 	private void onClickDeleteButton(ActionEvent event) {
-		int projectIndex = projectsListView.getSelectionModel().getSelectedIndex();
 
-		if(projectIndex>=0) {
-
-			projects.remove(projectIndex);
-
-			ProjectService projectService = new ProjectService();
-			projectService.saveProjects(projects);
-
-			loadProjects();
-
-			clearGUI();
+		projects.remove(actualListMember);
+		actualListMember=-1;
+		clearGUI();
 
 		}
-	}
-
 
 }
