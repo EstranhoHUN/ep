@@ -5,36 +5,16 @@ import hu.unideb.inf.estran.ep.core.EvolutionEngine;
 
 public class Project {
 
-	public Project(String alpha, String omega, int genomeSize)
-	{
-		this.alpha = alpha;
-		this.omega = omega;
-		this.genomeSize = genomeSize;
-	}
 
-	final private String alpha;
-	final private String omega;
-	final private int genomeSize;
 
-	public String getAlpha() {
-		return alpha;
-	}
-	public String getOmega() {
-		return omega;
-	}
-	public int getGenomeSize() {
-		return genomeSize;
-	}
-
-}
-
-/*
-public class Project {
-
-	public Project(String alphabet, String alpha, String omega, int method, int weight, int mutationRate,
-			boolean differentParents, int populationSize, int maxCycle) {
+	public Project(String projectName, boolean alphabet, boolean ALPHABET, boolean numbers, boolean symbols, String alpha, String omega,
+			int method, int weight, int mutationRate, boolean differentParents, int populationSize, int maxCycle) {
 		super();
+		this.projectName = projectName;
 		this.alphabet = alphabet;
+		this.ALPHABET = ALPHABET;
+		this.numbers = numbers;
+		this.symbols = symbols;
 		this.alpha = alpha;
 		this.omega = omega;
 		this.method = method;
@@ -44,21 +24,17 @@ public class Project {
 		this.populationSize = populationSize;
 		this.maxCycle = maxCycle;
 	}
-
-
-	final private String alphabet;
-	final private String alpha;
-	final private String omega;
-
-	final private int method;
-	final private int weight;
-	final private int mutationRate;
-	final private boolean differentParents;
-
-	final private int populationSize;
-	final private int maxCycle;
-	public String getAlphabet() {
+	public boolean isAlphabet() {
 		return alphabet;
+	}
+	public boolean isALPHABET() {
+		return ALPHABET;
+	}
+	public boolean isNumbers() {
+		return numbers;
+	}
+	public boolean isSymbols() {
+		return symbols;
 	}
 	public String getAlpha() {
 		return alpha;
@@ -84,7 +60,27 @@ public class Project {
 	public int getMaxCycle() {
 		return maxCycle;
 	}
+	public String getProjectName() {
+		return projectName;
+	}
 
+	private String projectName;
+
+	private boolean alphabet;
+	private boolean ALPHABET;
+	private boolean numbers;
+	private boolean symbols;
+
+	private String alpha;
+	private String omega;
+
+	private int method; //0,1,2
+	private int weight; //0,1,2
+	private int mutationRate; //0,1,2,3,4,5
+
+	private boolean differentParents;
+
+	private int populationSize; //10-1000
+	private int maxCycle;  //0-1000
 
 }
-*/
