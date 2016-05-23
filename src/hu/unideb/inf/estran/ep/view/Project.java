@@ -1,11 +1,6 @@
 package hu.unideb.inf.estran.ep.view;
 
-import hu.unideb.inf.estran.ep.core.EvolutionEngine;
-
-
 public class Project {
-
-
 
 	public Project(String projectName, boolean alphabet, boolean ALPHABET, boolean numbers, boolean symbols, String alpha, String omega,
 			int method, int weight, int mutationRate, boolean differentParents, int populationSize, int maxCycle) {
@@ -82,5 +77,4 @@ public class Project {
 
 	private int populationSize; //10-1000
 	private int maxCycle;  //0-1000
-
 }

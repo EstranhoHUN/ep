@@ -1,6 +1,5 @@
 package hu.unideb.inf.estran.ep.core;
 import java.util.Random;
-import java.util.Vector;
 
 public class Environment {
 
@@ -10,20 +9,6 @@ public class Environment {
     private String alpha;
     private String omega;
 
-
-    public Environment(int populationSize, int genomeSize, String alphabet, String omega) {
-
-        this.populationSize = populationSize;
-        this.genomeSize = genomeSize;
-        this.alphabet = alphabet;
-        this.omega = omega;
-
-        if(isOmegaValid()) {} else {/* SHIT */}
-    }
-
-
-
-
     public Environment(int populationSize, int genomeSize, String alphabet, String alpha, String omega) {
 
         this.populationSize = populationSize;
@@ -32,48 +17,32 @@ public class Environment {
         this.alpha = alpha;
         this.omega = omega;
 
-        if(isAlphaValid() && isOmegaValid()) {} else {/* SHIT */} //exception
+      //  if(isAlphaValid() && isOmegaValid()) {} else {} //its okay...
     }
-
-
-
 
     public String getAlpha() {
         return alpha;
     }
 
-
-
-
-
     public int getPopulationSize() {
         return populationSize;
     }
-
-
 
     public int getGenomeSize() {
         return genomeSize;
     }
 
-
-
     public String getAlphabet() {
         return alphabet;
     }
-
-
 
     public String getOmega() {
         return omega;
     }
 
-
-
     public boolean isAlphaValid() {
 
     	if(alpha.equals("")) return true;
-
 
 	        boolean charFound = false;
 	        boolean allFound = true;
@@ -87,7 +56,6 @@ public class Environment {
 	        }
 
 	        return allFound && alpha.length()==genomeSize;
-
     }
 
     public boolean isOmegaValid() {
@@ -110,21 +78,14 @@ public class Environment {
         public Unit mutate(Unit u, int mutationRate) {
 
             mutationRate = mutationRate < 0 ? 0 : mutationRate > 10 ? 10 : mutationRate;
-
             Random rand = new Random();
-
             String genome = "";
-
             for(int i = 0;i<genomeSize;i++) {
-
-
                 genome += rand.nextInt(10) < mutationRate ? alphabet.charAt(rand.nextInt(alphabet.length())) : u.getGenome().charAt(i);
             }
 
-
             return new Unit(genome, calculateFitness(genome));
         }
-
 
         public Unit CrossOver (Unit u1, Unit u2, int weight) {
 
@@ -154,7 +115,7 @@ public class Environment {
         public Unit Mutate (Unit u, int mutationRate) {
             return u;
         }
-/*
+/*		//optional upgrade path
         public Vector<Unit> Elitism (Population p, int elitismRate) {
             return p.getUnits();
         }
@@ -162,14 +123,12 @@ public class Environment {
         public int calculateFitness (String s) { //0 is a no match, 100 is a perfect match - peakUnit
 
             if(s.equals(omega)) return 100;
-
             else {
 
                 int genomeFitness = 0;
                 int geneFitness = Math.round(100/genomeSize);
 
                 for(int i = 0;i<s.length();i++) {
-                    //distance += Math.abs((int)s.charAt(i) - (int)Omega.charAt(i));
                     genomeFitness += s.charAt(i) == omega.charAt(i) ? geneFitness : 0;
                 }
 
@@ -197,9 +156,7 @@ public class Environment {
 
         public Unit generateUnit() {
             String genome = generateGenome();
-            //System.out.println(genome + " (" + calculateFitness(genome) + ")"); //test
             Unit u = new Unit(genome, calculateFitness(genome));
-
             return u;
         }
 
@@ -208,7 +165,4 @@ public class Environment {
             Unit u = new Unit(genome, calculateFitness(genome));
             return u;
         }
-
-
-
 }

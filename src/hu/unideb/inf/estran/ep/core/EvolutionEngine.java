@@ -14,7 +14,6 @@ public class EvolutionEngine {
 		averageFitness = new Vector<>();
 		peakFitness = new Vector<>();
 
-
 		p = new Population(new Environment(populationSize, genomeSize, alphabet, alpha, omega));
 		if(alpha.equals(""))p.genesis(); else p.genesisFromSeed();
 	}
@@ -22,8 +21,8 @@ public class EvolutionEngine {
 	private Population p;
 	private int maxCycle;
 
-	private Vector<Integer> averageFitness;// = new Dimension()
-	private Vector<Integer> peakFitness;// = new Dimension()
+	private Vector<Integer> averageFitness;
+	private Vector<Integer> peakFitness;
 	private String allTimeFittestGenome;
 	private int allTimePeakFitness;
 
@@ -36,24 +35,18 @@ public class EvolutionEngine {
 
 		for (int currentCycle = 0; currentCycle<maxCycle; currentCycle++) {
 
-
 			averageFitness.add(p.getavarageFitness());
 			peakFitness.add(p.getPeakFitness());
 			p.evolve(method, weight, differentParents);
 			p.mutate(mutationRate);
-			//average és max fittness valamint all top unit mentése
-			//MUTATE / CROSSOVER
 		}
 
 		allTimeFittestGenome = p.getAllTimePeakGenome();
 		allTimePeakFitness = p.getAllTimePeakFitness();
-
 	}
 
 	public Vector<Integer> getAverageFitness() {return averageFitness;}
 	public Vector<Integer> getPeakFitness() {return peakFitness;}
 	public String getAllTimeFittestGenome() {return allTimeFittestGenome;}
 	public int getAllTimePeakFitness() {return allTimePeakFitness;}
-
-
 }

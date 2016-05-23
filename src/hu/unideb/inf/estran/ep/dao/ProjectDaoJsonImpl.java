@@ -4,21 +4,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.Writer;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 import java.util.Vector;
-
 import org.json.*;
-
 import hu.unideb.inf.estran.ep.view.Project;
-
 
 public class ProjectDaoJsonImpl implements ProjectDao {
 
@@ -29,7 +20,6 @@ public class ProjectDaoJsonImpl implements ProjectDao {
 
 			Reader in = new InputStreamReader(new FileInputStream("./resources/projects.json"), StandardCharsets.UTF_8);
 			JSONArray raw = new JSONArray(new JSONTokener(in));
-
 
 		for (int i = 0; i < raw.length(); i++)
 			projects.add(
@@ -53,29 +43,22 @@ public class ProjectDaoJsonImpl implements ProjectDao {
 		in.close();
 
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-
 	}
-
 
 	@Override
 	public Vector<Project> loadProjects() {
 		return projects;
 	}
 
-
 	@Override
 	public void saveProjects(Vector<Project> projects) {
-
 
 		JSONArray jsonArray = new JSONArray();
 
@@ -84,7 +67,6 @@ public class ProjectDaoJsonImpl implements ProjectDao {
 		for (Project p: projects) {
 
 		    JSONObject jsonObj= new JSONObject();
-
 
 		    jsonObj.put("projectName", p.getProjectName());
 		    jsonObj.put("alphabet", p.isAlphabet());
@@ -103,7 +85,6 @@ public class ProjectDaoJsonImpl implements ProjectDao {
 		    jsonArray.put(jsonObj.toString());
 		}
 
-
 		FileWriter file = new FileWriter("./resources/projects.json");
 
 		file.write(jsonArray.toString().replace("\\", "").replace("[\"", "[").replace("\"]", "]").replace("\"{", "{").replace("}\"", "}"));
@@ -111,10 +92,7 @@ public class ProjectDaoJsonImpl implements ProjectDao {
 		file.close();
 
 		} catch (IOException | JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
-
 }

@@ -1,36 +1,27 @@
 package hu.unideb.inf.estran.ep.view;
 
-import java.beans.EventHandler;
 import java.net.URL;
-import java.sql.Savepoint;
-import java.util.Arrays;
 import java.util.ResourceBundle;
-import java.util.Set;
 import java.util.Vector;
 
 import hu.unideb.inf.estran.ep.core.EvolutionEngine;
 import hu.unideb.inf.estran.ep.dao.ProjectService;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.text.Text;
 
 public class Controller implements Initializable{
 
@@ -85,8 +76,6 @@ public class Controller implements Initializable{
     @FXML
     private Button deleteButton;
 
-
-
 	private Vector<Integer> averageFitness;
 	private String allTimeFittestGenome;
 	private Vector<Integer> peakFitness;
@@ -96,7 +85,6 @@ public class Controller implements Initializable{
 
 	@FXML
 	private void onClickRunButton(ActionEvent event) {
-
 
     	validateFields();
 
@@ -115,7 +103,6 @@ public class Controller implements Initializable{
 
     @SuppressWarnings("unchecked")
 	private void updateGraph(){
-
 
     	XYChart.Series<Number, Number> average;
     	XYChart.Series<Number, Number> peak;
@@ -200,8 +187,6 @@ public class Controller implements Initializable{
 
 		if(!(ucAlphabetRadioButton.isSelected()||lcAlphabetRadioButton.isSelected()||numbersRadioButton.isSelected()||symbolsRadioButton.isSelected()))
 			ucAlphabetRadioButton.setSelected(true);
-
-
 	}
 
 	public void loadProjectsFromDao() {
@@ -210,11 +195,7 @@ public class Controller implements Initializable{
 
 	}
 
-	//public void loadProjectsFromVector() {
-
-//	}//todo
-
-	private void saveProjectsToVector() { //todo
+	private void saveProjectsToVector() {
 
 			validateFields();
 			if(actualListMember != -1) {
@@ -238,9 +219,7 @@ public class Controller implements Initializable{
 
 			loadGUI();
 			}
-			}
-
-
+		}
 
 	@FXML
 	public void onClickProjectListView(MouseEvent event) {
@@ -251,7 +230,6 @@ public class Controller implements Initializable{
 
 		loadGUI();
     }
-
 
 	private void clearGUI() {
 
@@ -273,7 +251,6 @@ public class Controller implements Initializable{
 
 		 updateProjectList();
 
-
 	}
 
 	private void loadGUI() {
@@ -293,7 +270,6 @@ public class Controller implements Initializable{
 		 symbolsRadioButton.setSelected(projects.elementAt(actualListMember).isSymbols());
 
 		 updateProjectList();
-
 
 	}
 
@@ -316,8 +292,6 @@ public class Controller implements Initializable{
 
 		loadProjectsFromDao();
 
-
-
 	 console.setStyle("-fx-control-inner-background: black; -fx-text-fill: lime;");
 	 console.setText("Please set options manually or choose a Project from the list, then click \"Run\".\nNew Projects "
 	 		+ "can be created and existing ones can be modified or deleted.\n");
@@ -330,12 +304,7 @@ public class Controller implements Initializable{
 
 	 actualListMember = -1;
 
-
 	}
-
-
-
-	//ELITISM
 
 	@FXML
 	private void onClickNewButton(ActionEvent event) {
@@ -353,5 +322,4 @@ public class Controller implements Initializable{
 		clearGUI();
 
 		}
-
 }

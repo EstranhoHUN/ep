@@ -2,19 +2,15 @@ package hu.unideb.inf.estran.ep.core;
 import java.util.Random;
 import java.util.Vector;
 
-import com.sun.javafx.print.Units;
-
 public class Population {
 
 	public Population(Environment e) {
 
 		this.e = e;
 		units = new Vector<>();
-
-
 	}
 
-	private Vector<Unit> units; //egyedek
+	private Vector<Unit> units;
 	private int populationFitness;
 	private int avarageFitness;
 	private Environment e;
@@ -31,7 +27,7 @@ public class Population {
 
 	public void evolve(int method, int weight, boolean differentParents) {
 
-		Vector<Unit> nextGeneration = new Vector<>(); //StarTrek FTW
+		Vector<Unit> nextGeneration = new Vector<>();
 		Unit u1, u2;
 
 		for(int i = 0;i<e.getPopulationSize();i++) {
@@ -50,13 +46,11 @@ public class Population {
 		units = nextGeneration;
 
 		update();
-
 	}
 
-	public Unit Selection (int method) { //átkéne rakni env-be... ha lesz idõ...
+	public Unit Selection (int method) { //should be in env - optional upgrade path
 		return method==0?TruncationSelection():method==1?RouletteWheelSelection():RandomSelection();
 	}
-
 
 	public Unit TruncationSelection () { // >= avg ; 0
 		Random rand = new Random();
@@ -68,7 +62,6 @@ public class Population {
 		return u;
 	}
 
-
 	public Unit RouletteWheelSelection () { // weighted by fitness ; IF popF is 0 -> randomS
 
 		if (populationFitness == 0) return RandomSelection();
@@ -78,20 +71,16 @@ public class Population {
 			int rand = new Random().nextInt(populationFitness);
 			int i = 0;
 			int counter = units.elementAt(i).getFitness();
-
 			while (counter < rand) counter += units.elementAt(++i).getFitness();
 
 			return units.elementAt(i);
 		}
-
-
 	}
 
-	public Unit RandomSelection () { //random ; else
+	public Unit RandomSelection () { //random
 		Random rand = new Random();
 		return units.elementAt(rand.nextInt(e.getPopulationSize()));
 	}
-
 
 	public void mutate(int mutationRate) {
 
@@ -100,17 +89,13 @@ public class Population {
 
 		for (int i = 0; i<e.getPopulationSize();i++) if (rand.nextInt(10) < mutationRate) units.set(i, e.mutate(units.elementAt(i), mutationRate));
 
-
 		update();
-
 	}
-
 
 	public void genesis() { //creates initial population
 		for (int i=0;i<e.getPopulationSize();i++) units.add(e.generateUnit());
 
 		update();
-
 	}
 
 	private void update(){
@@ -122,36 +107,26 @@ public class Population {
 	}
 
 	private void updateAllTimePeakFitness() {
-
 		if(allTimePeakFitness<getPeakFitness()) allTimePeakFitness = getPeakFitness();
-
-
 	}
 
 	private void updateAllTimePeakGenome() {
 		if(allTimePeakGenome == null) allTimePeakGenome = getPeakGenome();
 		if(e.calculateFitness(allTimePeakGenome)<e.calculateFitness(getPeakGenome())) allTimePeakGenome=getPeakGenome();
-
 	}
 
 	public void genesisFromSeed() { //creates initial population from seed - alpha
-
 		for (int i=0;i<e.getPopulationSize();i++) units.add(e.generateUnitSeeded());
-
 		update();
 	}
 
 	private Unit getFittestUnit() {
-
-
 		Unit unit = units.elementAt(0);
 
 		for (Unit u : units) {
 			if (unit.getFitness()<u.getFitness()) unit = u;
 		}
-
 		return unit;
-
 	}
 
 	public int getPeakFitness() {
@@ -162,12 +137,13 @@ public class Population {
 		return getFittestUnit().getGenome();
 	}
 
-	public void updateAvarageFitness() { avarageFitness = populationFitness == 0?0:populationFitness/e.getPopulationSize();}
+	public void updateAvarageFitness() {
+		avarageFitness = populationFitness == 0?0:populationFitness/e.getPopulationSize();
+		}
 
 	public void updatePopulationFitness() {
 		populationFitness = 0;
 		for (Unit u : units) populationFitness += u.getFitness();
-
 	}
 
 	public void updatePeakFitness() {getPeakFitness();}
@@ -180,7 +156,4 @@ public class Population {
 
 		return allTimePeakFitness;
 	}
-
 }
-
-//egyenlõ szülõk - ha elsz idõ
