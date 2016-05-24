@@ -2,14 +2,9 @@ package hu.unideb.inf.estran.ep.test;
 
 import static org.junit.Assert.*;
 
-import java.util.Vector;
-
-import org.junit.After;
-import org.junit.AfterClass;
+import org.hamcrest.core.IsNull;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
 import hu.unideb.inf.estran.ep.core.Environment;
@@ -19,16 +14,15 @@ import hu.unideb.inf.estran.ep.core.Unit;
 import hu.unideb.inf.estran.ep.dao.ProjectDao;
 import hu.unideb.inf.estran.ep.dao.ProjectDaoJsonImpl;
 import hu.unideb.inf.estran.ep.dao.ProjectService;
-import hu.unideb.inf.estran.ep.view.Project;
 
 public class CoreTest {
 
-	private EvolutionEngine ee, eeSeeded;
-	private Environment eOK, eFail, eFail_;
+	private EvolutionEngine ee, eeSeeded, eeNumbers;
+	private Environment eOK, eFail, eFail_, eDivergent;
 	private Unit u1, u2;
 	private ProjectDaoJsonImpl pDJ;
 	private ProjectService pS;
-	private Population p;
+	private Population p,q;
 
 	@Before
 	public void setUp() throws Exception {
@@ -52,10 +46,12 @@ public class CoreTest {
 
 		ee = new EvolutionEngine(populationSize, omega.length(), alphabet+ALPHABET+symbols, "", omega, maxCycle, method, weight, mutationRate, differentParents);
 		eeSeeded = new EvolutionEngine(populationSize, omega.length(), alphabet+ALPHABET+symbols, alpha, omega, maxCycle, method, weight, mutationRate, differentParents);
+		eeNumbers = new EvolutionEngine(populationSize, omega.length(), numbers, alpha, omega, maxCycle, method, weight, mutationRate, differentParents);
 
 		eOK = new Environment(populationSize, 12, alphabet+ALPHABET+symbols, alpha, omega);
 		eFail = new Environment(populationSize, 12, alphabet, alpha, omega);
 		eFail_ = new Environment(populationSize, 11, alphabet+ALPHABET+symbols, alpha, omega);
+		eDivergent = new Environment(populationSize, 5, alphabet+ALPHABET+symbols, "", "éáõúû");
 
 		u1 = new Unit("genome", eOK.calculateFitness("genome"));
 		u2 = new Unit("geneom", eOK.calculateFitness("geneom"));
@@ -64,8 +60,10 @@ public class CoreTest {
 		pS = new ProjectService();
 
 		p = new Population(eOK);
-
 		p.genesis();
+
+		q = new Population(eDivergent);
+		q.genesis();
 
 	}
 
@@ -74,8 +72,8 @@ public class CoreTest {
 	public void instances() {
 
 		assertThat(ee, is(not(eeSeeded)));
+		assertThat(eeNumbers, IsNull.notNullValue());
 		assertThat(u1, is(not(u2)));
-
 		assertThat(ee, instanceOf(EvolutionEngine.class));
 		assertThat(eOK, instanceOf(Environment.class));
 		assertThat(u1, instanceOf(Unit.class));
@@ -102,5 +100,6 @@ public class CoreTest {
 		assertEquals(p.getPeakFitness(), eOK.calculateFitness(p.getPeakGenome()));
 		assertTrue(p.getPeakFitness() >= 0);
 		assertTrue(p.getAllTimePeakFitness()>=p.getPeakFitness());
+		assertEquals(q.getAllTimePeakFitness(), 0);
 	}
 }

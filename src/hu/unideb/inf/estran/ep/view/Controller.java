@@ -257,6 +257,8 @@ public class Controller implements Initializable{
 
 	private void loadGUI() {
 
+		if(actualListMember != -1) {
+
 		 projectNameTextField.setText(projects.elementAt(actualListMember).getProjectName());
 		 omegaField.setText(projects.elementAt(actualListMember).getOmega());
 		 alphaField.setText(projects.elementAt(actualListMember).getAlpha());
@@ -272,7 +274,7 @@ public class Controller implements Initializable{
 		 symbolsRadioButton.setSelected(projects.elementAt(actualListMember).isSymbols());
 
 		 updateProjectList();
-
+		}
 	}
 
 	public static void onExit() {
@@ -296,7 +298,8 @@ public class Controller implements Initializable{
 
 	 console.setStyle("-fx-control-inner-background: black; -fx-text-fill: lime;");
 	 console.setText("Please set options manually or choose a Project from the list, then click \"Run\".\nNew Projects "
-	 		+ "can be created and existing ones can be modified or deleted.\n");
+	 		+ "can be created and existing ones can be modified or deleted.\n"
+	 		+ "Save is automatic when you change to an other project and on exit.");
 
 	 methodChoiceBox.setItems(FXCollections.observableArrayList("Roulette Wheel", "Truncation", "Random"));
 	 crossOverChoiceBox.setItems(FXCollections.observableArrayList("Weighted by fitness", "Random", "Exact 75%"));

@@ -18,7 +18,7 @@ public class ProjectDaoJsonImpl implements ProjectDao {
 	public ProjectDaoJsonImpl() {
 		try {
 
-			Reader in = new InputStreamReader(new FileInputStream("./resources/projects.json"), StandardCharsets.UTF_8);
+			Reader in = new InputStreamReader(new FileInputStream("projects.json"), StandardCharsets.UTF_8);
 			JSONArray raw = new JSONArray(new JSONTokener(in));
 
 		for (int i = 0; i < raw.length(); i++)
@@ -85,7 +85,7 @@ public class ProjectDaoJsonImpl implements ProjectDao {
 		    jsonArray.put(jsonObj.toString());
 		}
 
-		FileWriter file = new FileWriter("./resources/projects.json");
+		FileWriter file = new FileWriter("projects.json");
 
 		file.write(jsonArray.toString().replace("\\", "").replace("[\"", "[").replace("\"]", "]").replace("\"{", "{").replace("}\"", "}"));
 		file.flush();
