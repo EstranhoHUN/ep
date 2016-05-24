@@ -99,6 +99,8 @@ public class Controller implements Initializable{
     	updateGraph();
         updateConsole();
 
+        actualListMember = -1;
+
 	}
 
     @SuppressWarnings("unchecked")
@@ -310,16 +312,17 @@ public class Controller implements Initializable{
 	private void onClickNewButton(ActionEvent event) {
 
 		projects.add(new Project("New Project",true,true,false,true,"","Hello World!",0,0,1,true,100,100));
-
+		actualListMember = -1;
 		updateProjectList();
 	}
 
 	@FXML
 	private void onClickDeleteButton(ActionEvent event) {
 
-		projects.remove(actualListMember);
-		actualListMember=-1;
-		clearGUI();
-
+		if(actualListMember!=-1) {
+			projects.remove(actualListMember);
+			actualListMember=-1;
+			clearGUI();
+		}
 		}
 }
